@@ -34,7 +34,7 @@ Then configure the rules you want to use under the rules section.
 ```json
 {
     "rules": {
-        "fidel/rule-name": 2
+        "fidel/fidel-rule-2": 1
     }
 }
 ```

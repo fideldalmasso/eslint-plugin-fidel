@@ -87,7 +87,11 @@ def analize_container(file_name):
         return result
 
 
-cache = {}
+cache = {
+    'components': {},
+    'queries': {},
+    'defaultQueries': {},
+    }
 # archivo = "src/components/Modal/GetHelpModal/getHelpModalView.jsx"
 # valid_props = get_component_props(archivo)
 # component_name = get_component_name(archivo)
@@ -96,19 +100,23 @@ cache = {}
 
 for file_name in pathlib.Path('./src/').rglob("*"):
     file_name = str(file_name)
+    if('getHelpModalContainer' in file_name):
+        print('xd')
     if(file_name.endswith("Container.js")):
         componentFile = analize_container(file_name)
         if(componentFile):
-            if not componentFile in cache:
-                cache[componentFile] = {}
-                cache[componentFile]["validProps"] = []
-            cache[componentFile]["container"] = file_name
+            if not componentFile in cache['components']:
+                cache['components'][componentFile] = {}
+                cache['components'][componentFile]["validProps"] = []
+            cache['components'][componentFile]["container"] = file_name
+        else:
+            print('error')
     # analyzeOccurence(file_name,component_name,container_name)
     elif(file_name.endswith(".jsx") or file_name.endswith(".js")):
-        if not file_name in cache:
-            cache[file_name] = {}
-            cache[file_name]["container"] = ""
-        cache[file_name]["validProps"]=get_component_props(file_name)
+        if not file_name in cache['components']:
+            cache['components'][file_name] = {}
+            cache['components'][file_name]["container"] = ""
+        cache['components'][file_name]["validProps"]=get_component_props(file_name)
     
 
 
