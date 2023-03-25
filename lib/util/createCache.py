@@ -5,9 +5,6 @@ import json
 from pathlib import Path
 from datetime import datetime
 
-# export const (.*) =.*[\s]+query (.+)\((.+)+\)
-
-
 def get_component_name(file_name):
     return file_name[file_name.rfind('/')+1:-4]     # text from last / to .jsx -> component name
 
@@ -41,25 +38,6 @@ def get_container_name(component_name):
     return re.sub(rf"View|Dialog", "Container", component_name)
 
 
-# def analyzeOccurence(file_name,component_name, container_name):
-#     with open(file_name) as file:
-#         data = file.read()
-#         # print(file_name)
-
-#         result = re.search(rf"import (.*) from .*({component_name}|{container_name}|{component_name+'Container'})';",data)
-
-
-#         if(result):
-#             used_name = result.group(1)
-#             print("Find occurence in:",used_name, '->', file_name)
-#             result2 = re.search("[\t\s]<"+used_name+"([ .\n\t\sa-zA-Z=\{\}\(\)<>\d]*)(/>|></)", data)
-#             if(result2):
-#                 print(result2.group(1))
-#                 result3 = re.search("[a-zA-Z]",result2)
-#             else:
-#                 print("no encontrado xd")
-#         return result
-
 def analize_container(file_name):
     with open(file_name) as file:
         data = file.read()
@@ -87,21 +65,45 @@ def analize_container(file_name):
         return result
 
 
+queryRegex = re.compile(R"""
+export\sconst\s
+(?P<queryLiteral>.*)\s=.*\s+query\s+
+(?P<queryName>.+)\s*\(\s*
+(?P<queryVariables>[\w:$\s!.,]+)\s*\)\s*{\s+
+(?P<subQueryName>.+)\s*\(\s*
+(?P<subQueryVariables>[\w\s:{},$]*)\)
+""", re.VERBOSE)
+
+extractVariableNameRegex = r'\$?([\w]+):.*'
+
+def analize_query_file(file_name):
+    with open(file_name) as file:
+        data = file.read()
+        data = remove_comments(data)
+        # result = queryRegex.findall(data)
+        result = {}
+        for m in queryRegex.finditer(data):
+            queryObject = m.groupdict()
+            # queryObject['queryVariables'] = [re.match(extractVariableNameRegex,x).group(1) for x in queryObject['queryVariables'].split(',')]
+            queryObject['queryVariables'] = re.findall(r'\$(\w*)',queryObject['queryVariables'])
+            queryObject['subQueryVariables'] = re.findall(r'\$(\w*)',queryObject['subQueryVariables'])
+            literal = queryObject['queryLiteral']
+            del queryObject['queryLiteral']
+            result[literal]=queryObject
+        return result
+
 cache = {
     'components': {},
-    'queries': {},
-    'defaultQueries': {},
+    'queries': {}
     }
-# archivo = "src/components/Modal/GetHelpModal/getHelpModalView.jsx"
-# valid_props = get_component_props(archivo)
-# component_name = get_component_name(archivo)
-# container_name = get_container_name(component_name)
-# print(lista)
 
 for file_name in pathlib.Path('./src/').rglob("*"):
     file_name = str(file_name)
-    if('getHelpModalContainer' in file_name):
-        print('xd')
+    if("queries" in file_name.lower()) and file_name.endswith(".js"):
+        ret = analize_query_file(file_name)
+        for (key, value) in ret.items():
+            cache['queries'][key] = value
+
     if(file_name.endswith("Container.js")):
         componentFile = analize_container(file_name)
         if(componentFile):
@@ -111,19 +113,13 @@ for file_name in pathlib.Path('./src/').rglob("*"):
             cache['components'][componentFile]["container"] = file_name
         else:
             print('error')
-    # analyzeOccurence(file_name,component_name,container_name)
+            
     elif(file_name.endswith(".jsx") or file_name.endswith(".js")):
         if not file_name in cache['components']:
             cache['components'][file_name] = {}
             cache['components'][file_name]["container"] = ""
         cache['components'][file_name]["validProps"]=get_component_props(file_name)
     
-
-
-
-    # pattern = r"(\".*?\"|\'.*?\')|(/\*.*?\*/|//[^\r\n]*$)"
-    # {([,./\w\s]*)} = props;
-# print(json.dumps(cache),)
     cache['date'] = str(datetime.now())
 
 with open('fidel.json', 'w', encoding='utf-8') as f:
