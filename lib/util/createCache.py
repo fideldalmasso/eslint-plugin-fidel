@@ -5,6 +5,8 @@ import json
 from pathlib import Path
 from datetime import datetime
 
+# export const (.*) =.*[\s]+query (.+)\((.+)+\)
+
 
 def get_component_name(file_name):
     return file_name[file_name.rfind('/')+1:-4]     # text from last / to .jsx -> component name
@@ -28,12 +30,12 @@ def get_component_props(file_name):
         data = file.read()
         data = remove_comments(data)
         # print(data)
-        result = re.search(r"{([,./\w\s]*)} = props", data)
+        result = re.search(r"{([,.=\w\s\/]*)}\s+=\s+props", data)
         if(result):
             result = result.group(1)
             result = re.sub(r"[\n\s\t]",'',result)
             result = result.split(",")
-        return result
+        return result if result else []
 
 def get_container_name(component_name):
     return re.sub(rf"View|Dialog", "Container", component_name)
@@ -94,18 +96,19 @@ cache = {}
 
 for file_name in pathlib.Path('./src/').rglob("*"):
     file_name = str(file_name)
-    if(file_name.endswith(".jsx")):
-        if not file_name in cache:
-            cache[file_name] = {}
-            cache[file_name]["container"] = ""
-        cache[file_name]["validProps"]=get_component_props(file_name)
-    elif(file_name.endswith("Container.js")):
+    if(file_name.endswith("Container.js")):
         componentFile = analize_container(file_name)
         if(componentFile):
             if not componentFile in cache:
                 cache[componentFile] = {}
+                cache[componentFile]["validProps"] = []
             cache[componentFile]["container"] = file_name
     # analyzeOccurence(file_name,component_name,container_name)
+    elif(file_name.endswith(".jsx") or file_name.endswith(".js")):
+        if not file_name in cache:
+            cache[file_name] = {}
+            cache[file_name]["container"] = ""
+        cache[file_name]["validProps"]=get_component_props(file_name)
     
 
 
