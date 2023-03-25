@@ -7,7 +7,6 @@ module.exports = {
     "plugin:eslint-plugin/recommended",
     "plugin:node/recommended",
   ],
-  "parser": "@babel/eslint-parser",
   "parserOptions": {
     "ecmaVersion": 8,
     "requireConfigFile": false,
@@ -19,15 +18,13 @@ module.exports = {
       "jsx": true,
       "modules": true
     },
-    "babelOptions": {
-      "presets": ["@babel/preset-react"]
-    }
   },
   env: {
     node: true,
   },
   plugins:[],
   rules: {
+    "indent": ["error", 2],
   },
   overrides: [
     {

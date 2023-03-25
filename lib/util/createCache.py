@@ -3,6 +3,7 @@ import os
 import pathlib
 import json
 from pathlib import Path
+from datetime import datetime
 
 
 def get_component_name(file_name):
@@ -85,10 +86,10 @@ def analize_container(file_name):
 
 
 cache = {}
-archivo = "src/components/Modal/GetHelpModal/getHelpModalView.jsx"
-valid_props = get_component_props(archivo)
-component_name = get_component_name(archivo)
-container_name = get_container_name(component_name)
+# archivo = "src/components/Modal/GetHelpModal/getHelpModalView.jsx"
+# valid_props = get_component_props(archivo)
+# component_name = get_component_name(archivo)
+# container_name = get_container_name(component_name)
 # print(lista)
 
 for file_name in pathlib.Path('./src/').rglob("*"):
@@ -112,6 +113,9 @@ for file_name in pathlib.Path('./src/').rglob("*"):
     # pattern = r"(\".*?\"|\'.*?\')|(/\*.*?\*/|//[^\r\n]*$)"
     # {([,./\w\s]*)} = props;
 # print(json.dumps(cache),)
+    cache['date'] = str(datetime.now())
 
 with open('fidel.json', 'w', encoding='utf-8') as f:
     json.dump(cache, f, ensure_ascii=False, indent=4)
+
+print("Cache created successfully!")
