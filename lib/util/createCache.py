@@ -61,7 +61,7 @@ def analize_container(file_name):
     with open(file_name) as file:
         data = file.read()
         data = remove_comments(data)
-        result = re.search(r"connect\(.+\)\((.+)\)", data)
+        result = re.search(r"connect\([\w,\s]+\)\((.+)\)", data)
         if(result):
             result = result.group(1)
             variableName = re.search(result+" from '(.+)'",data)
@@ -96,6 +96,7 @@ for file_name in pathlib.Path('./src/').rglob("*"):
     if(file_name.endswith(".jsx")):
         if not file_name in cache:
             cache[file_name] = {}
+            cache[file_name]["container"] = ""
         cache[file_name]["validProps"]=get_component_props(file_name)
     elif(file_name.endswith("Container.js")):
         componentFile = analize_container(file_name)
