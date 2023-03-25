@@ -11,19 +11,12 @@
   "main": "./lib/index.js",
   "exports": "./lib/index.js",
   "scripts": {
-    "lint": "npm-run-all lint:js",
-    "lint:eslint-docs": "npm-run-all \"update:eslint-docs -- --check\"",
-    "lint:js": "eslint ./src/*",
     "test": "mocha tests --recursive",
     "update:eslint-docs": "eslint-doc-generator"
   },
   "dependencies": {
-    "@babel/eslint-parser": "^7.19.1",
-    "@babel/preset-react": "^7.18.6",
-    "@mui/material": "^5.11.12",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-feather": "^2.0.10",
+    "@babel/parser": "^7.21.3",
+    "@babel/traverse": "^7.21.3",
     "requireindex": "^1.2.0"
   },
   "devDependencies": {

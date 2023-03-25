@@ -3,9 +3,9 @@
 module.exports = {
   root: true,
   extends: [
-    // "eslint:recommended",
-    // "plugin:eslint-plugin/recommended",
-    // "plugin:node/recommended",
+    "eslint:recommended",
+    "plugin:eslint-plugin/recommended",
+    "plugin:node/recommended",
   ],
   "parser": "@babel/eslint-parser",
   "parserOptions": {
@@ -26,11 +26,8 @@ module.exports = {
   env: {
     node: true,
   },
-  plugins:['fidel-plugin-id'],
+  plugins:[],
   rules: {
-    // "fidel-plugin-id/fidel-rule-1": "error",
-    "fidel-plugin-id/fidel-rule-2": "warn",
-    "react-hooks/exhaustive-deps": "off",
   },
   overrides: [
     {
