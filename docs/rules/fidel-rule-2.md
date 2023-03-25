@@ -1,4 +1,4 @@
-# Detect unknown props passed to a component in React (`fidel-plugin-id/fidel-rule-2`)
+# Detect unknown props passed to a component in React (`fidel/fidel-rule-2`)
 
 <!-- end auto-generated rule header -->
 
@@ -10,18 +10,18 @@ This rule aims to...
 
 Examples of **incorrect** code for this rule:
 
-```js
-
-// fill me in
-
+```jsx
+import Card from '../cardView';
+<Card key={'1234'}/> 
+// 'key' prop is not defined in props object inside cardView file
 ```
 
 Examples of **correct** code for this rule:
 
-```js
-
-// fill me in
-
+```jsx
+import Card from '../cardView';
+<Card bold={true}/> 
+// 'bold' prop is defined in props object inside cardView file
 ```
 
 

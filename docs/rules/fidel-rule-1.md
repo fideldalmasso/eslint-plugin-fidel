@@ -1,4 +1,4 @@
-# Asdfasdf (`fidel-plugin-id/fidel-rule-1`)
+# This rule fires with error always, for testing purposes (`fidel/fidel-rule-1`)
 
 <!-- end auto-generated rule header -->
 
