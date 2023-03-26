@@ -67,11 +67,11 @@ def analize_container(file_name):
 
 queryRegex = re.compile(R"""
 export\sconst\s
-(?P<queryLiteral>.*)\s=.*\s+query\s+
+(?P<queryLiteral>.*)\s=.*\s+(?:query|mutation)\s+
 (?P<queryName>.+)\s*\(\s*
-(?P<queryVariables>[\w:$\s!.,]+)\s*\)\s*{\s+
+(?P<queryVariables>["\w:$\s!.,{}\[\]]+)\s*\)\s*{\s+
 (?P<subQueryName>.+)\s*\(\s*
-(?P<subQueryVariables>[\w\s:{},$]*)\)
+(?P<subQueryVariables>["\w:$\s!.,{}\[\]]*)\)
 """, re.VERBOSE)
 
 extractVariableNameRegex = r'\$?([\w]+):.*'
@@ -99,12 +99,11 @@ cache = {
 
 for file_name in pathlib.Path('./src/').rglob("*"):
     file_name = str(file_name)
-    if("queries" in file_name.lower()) and file_name.endswith(".js"):
+    if(("queries" in file_name.lower()) or ("mutation" in file_name.lower()) ) and file_name.endswith(".js"):
         ret = analize_query_file(file_name)
         for (key, value) in ret.items():
             cache['queries'][key] = value
-
-    if(file_name.endswith("Container.js")):
+    elif(file_name.endswith("Container.js")):
         componentFile = analize_container(file_name)
         if(componentFile):
             if not componentFile in cache['components']:
