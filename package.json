@@ -1,13 +1,13 @@
 {
   "name": "eslint-plugin-fidel",
-  "version": "0.1.0",
-  "description": "Eslint plugin for React props and Graphql queries validation",
+  "version": "0.1.1",
+  "description": "ESLint plugin for React props and Graphql queries validation",
   "keywords": [
     "eslint",
     "eslintplugin",
     "eslint-plugin"
   ],
-  "author": "fidel",
+  "author": "Fidel Dalmasso",
   "main": "./lib/index.js",
   "exports": "./lib/index.js",
   "scripts": {
