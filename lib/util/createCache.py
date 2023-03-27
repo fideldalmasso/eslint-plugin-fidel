@@ -99,10 +99,11 @@ cache = {
 
 for file_name in pathlib.Path('./src/').rglob("*"):
     file_name = str(file_name)
-    if(("queries" in file_name.lower()) or ("mutation" in file_name.lower()) ) and file_name.endswith(".js"):
+    if("graphql/" in file_name.lower() and file_name.endswith(".js")):
         ret = analize_query_file(file_name)
+        cache['queries'][file_name] = {}
         for (key, value) in ret.items():
-            cache['queries'][key] = value
+            cache['queries'][file_name][key] = value
     elif(file_name.endswith("Container.js")):
         componentFile = analize_container(file_name)
         if(componentFile):
